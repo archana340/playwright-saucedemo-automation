@@ -18,29 +18,25 @@ The framework covers the following test cases:
 * Complete checkout flow
   
 ## Project Structure
-pages/ – Page Object classes containing locators and reusable page actions
-
-tests/ – Automated test scenarios
-
-utils/ – Test data and reusable utilities
-
-playwright.config.js – Playwright configuration file
-
-package.json – Project dependencies and scripts
+* pages/ – Page Object classes containing locators and reusable page actions
+* tests/ – Automated test scenarios
+* utils/ – Test data and reusable utilities
+* playwright.config.js – Playwright configuration file
+* package.json – Project dependencies and scripts
 
 ## How to Run Tests
 Install dependencies:
 
 npm install
-
+  
 Run all tests:
 
 npx playwright test
-
+  
 Run tests with visible browser:
 
 npx playwright test --headed
-
+  
 View test report:
 
 npx playwright show-report
