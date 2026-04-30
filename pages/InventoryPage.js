@@ -1,24 +1,38 @@
+const { expect } = require('@playwright/test');
+
 class InventoryPage {
   constructor(page) {
     this.page = page;
-    this.inventoryTitle = '.title';
-    this.cartIcon = '.shopping_cart_link';
+
+    // Stable, readable locators
+    this.inventoryTitle = page.locator('.title');
+    this.cartIcon = page.locator('.shopping_cart_link');
+    this.inventoryItems = page.locator('.inventory_item');
+  }
+
+  async expectPageLoaded() {
+    await expect(this.inventoryTitle).toHaveText('Products');
   }
 
   async getPageTitle() {
-    return await this.page.textContent(this.inventoryTitle);
+    return await this.inventoryTitle.textContent();
   }
 
   async addProductToCart(productName) {
-    const productLocator = this.page.locator('.inventory_item').filter({
+    // Find specific product using text filter (dynamic locator)
+    const product = this.inventoryItems.filter({
       has: this.page.locator('.inventory_item_name', { hasText: productName })
     });
 
-    await productLocator.locator('button').click();
+    const addToCartButton = product.locator('button');
+
+    await expect(addToCartButton).toBeVisible();
+    await addToCartButton.click();
   }
 
   async openCart() {
-    await this.page.click(this.cartIcon);
+    await expect(this.cartIcon).toBeVisible();
+    await this.cartIcon.click();
   }
 }
 

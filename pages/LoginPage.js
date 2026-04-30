@@ -1,10 +1,14 @@
+const { expect } = require('@playwright/test');
+
 class LoginPage {
   constructor(page) {
     this.page = page;
-    this.usernameInput = '#user-name';
-    this.passwordInput = '#password';
-    this.loginButton = '#login-button';
-    this.errorMessage = '[data-test="error"]';
+
+    // Use Playwright locators instead of plain strings
+    this.usernameInput = page.locator('#user-name');
+    this.passwordInput = page.locator('#password');
+    this.loginButton = page.getByRole('button', { name: 'Login' });
+    this.errorMessage = page.locator('[data-test="error"]');
   }
 
   async goto() {
@@ -12,13 +16,26 @@ class LoginPage {
   }
 
   async login(username, password) {
-    await this.page.fill(this.usernameInput, username);
-    await this.page.fill(this.passwordInput, password);
-    await this.page.click(this.loginButton);
+    await this.usernameInput.fill(username);
+    await this.passwordInput.fill(password);
+
+    // Add validation before action (reduces flaky tests)
+    await expect(this.loginButton).toBeVisible();
+    await expect(this.loginButton).toBeEnabled();
+
+    await this.loginButton.click();
   }
 
-  async getErrorMessage() {
-    return await this.page.textContent(this.errorMessage);
+  async expectLoginSuccess() {
+    await expect(this.page).toHaveURL(/inventory/);
+  }
+
+  async expectLoginError() {
+    await expect(this.errorMessage).toBeVisible();
+  }
+
+  async getErrorMessageText() {
+    return await this.errorMessage.textContent();
   }
 }
 
