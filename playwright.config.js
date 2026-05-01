@@ -6,7 +6,11 @@ module.exports = defineConfig({
   retries: 0,
 
   use: {
-    headless: false
+    baseURL: 'https://www.saucedemo.com',
+    headless: false,
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure'
   },
 
   projects: [

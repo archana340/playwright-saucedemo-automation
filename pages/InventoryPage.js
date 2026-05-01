@@ -24,8 +24,7 @@ class InventoryPage {
       has: this.page.locator('.inventory_item_name', { hasText: productName })
     });
 
-    const addToCartButton = product.locator('button');
-
+    const addToCartButton = product.getByRole('button', { name: 'Add to cart' });
     await expect(addToCartButton).toBeVisible();
     await addToCartButton.click();
   }
