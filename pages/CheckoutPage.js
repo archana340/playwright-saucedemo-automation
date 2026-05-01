@@ -1,27 +1,38 @@
+const { expect } = require('@playwright/test');
+
 class CheckoutPage {
   constructor(page) {
     this.page = page;
-    this.firstNameInput = '#first-name';
-    this.lastNameInput = '#last-name';
-    this.postalCodeInput = '#postal-code';
-    this.continueButton = '#continue';
-    this.finishButton = '#finish';
-    this.successMessage = '.complete-header';
+
+    // Use Playwright locators (BEST PRACTICE)
+    this.firstNameInput = page.locator('#first-name');
+    this.lastNameInput = page.locator('#last-name');
+    this.postalCodeInput = page.locator('#postal-code');
+    this.continueButton = page.getByRole('button', { name: 'Continue' });
+    this.finishButton = page.getByRole('button', { name: 'Finish' });
+    this.successMessage = page.locator('.complete-header');
   }
 
   async enterCheckoutInformation(firstName, lastName, postalCode) {
-    await this.page.fill(this.firstNameInput, firstName);
-    await this.page.fill(this.lastNameInput, lastName);
-    await this.page.fill(this.postalCodeInput, postalCode);
-    await this.page.click(this.continueButton);
+    await this.firstNameInput.fill(firstName);
+    await this.lastNameInput.fill(lastName);
+    await this.postalCodeInput.fill(postalCode);
+
+    await expect(this.continueButton).toBeVisible();
+    await this.continueButton.click();
   }
 
   async finishOrder() {
-    await this.page.click(this.finishButton);
+    await expect(this.finishButton).toBeVisible();
+    await this.finishButton.click();
   }
 
-  async getSuccessMessage() {
-    return await this.page.textContent(this.successMessage);
+  async expectOrderSuccess() {
+    await expect(this.successMessage).toHaveText(/thank you/i);
+  }
+
+  async getSuccessMessageText() {
+    return await this.successMessage.textContent();
   }
 }
 
